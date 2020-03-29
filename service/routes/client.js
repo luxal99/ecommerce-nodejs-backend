@@ -3,6 +3,7 @@ const app = express();
 const bodyparser = require('body-parser');
 const cors = require('cors');
 const router = express.Router();
+const Order = require('../model/Order');
 
 app.use(express.static(__dirname + '/static', {dotfiles: 'allow'}));
 app.use(bodyparser.json());
@@ -17,3 +18,23 @@ app.use(function (req, res, next) {
     );
     next();
 });
+
+router.post('/saveOrder',(req,res)=>{
+    const order = new Order({
+        date:Date.now(),
+        total:400,
+        productList: [
+            {title:'Smoki',amount:200},
+            {title:'Smoki',amount:200}
+        ]
+    })
+
+    order.save().then(data=>{
+        res.json(order)
+    }).catch(err=>{
+        res.send(err);
+    })
+})
+
+
+module.exports = router;
