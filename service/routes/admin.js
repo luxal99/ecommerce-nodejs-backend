@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -11,7 +13,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(router);
 
-require('dotenv').config();
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -31,15 +32,15 @@ router.get('/getOrders',async (req,res)=>{
     }
 });
 
-router.delete('/deleteOrder',async (req,res)=>{
+router.delete('/deleteOrder/:id_order',async (req,res)=>{
     try{
-
-        const removedOrder = await Order.deleteOne({_id:req.body.id_order});
+        console.log(req.params.id_order);
+        const removedOrder = await Order.deleteOne({_id:req.params.id_order});
         res.send(200);
     }catch  {
         res.send({message:"Database error"})
     }
-})
+});
 
 
 

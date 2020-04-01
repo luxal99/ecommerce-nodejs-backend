@@ -5,7 +5,7 @@ app.use('/api',controller);
 require('dotenv').config();
 
 app.listen(process.env.API_PORT,()=>{
-    console.log("App runned");
+    console.log("App is running");
 });
 
 

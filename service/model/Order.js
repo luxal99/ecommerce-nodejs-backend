@@ -14,6 +14,6 @@ const OrderSchema = mongoose.Schema({
         type:Schema.Types.Object,ref:"Product"
     }]
 
-})
+});
 
-module.exports = mongoose.model('order',OrderSchema)
+module.exports = mongoose.model('order',OrderSchema);
