@@ -128,9 +128,9 @@ router.get('/registration/getUserType', async (req, res) => {
 router.post('/login', async (req, res) => {
     console.log(req.body)
     try {
-        const user = await axios.post("http://localhost:8080/login/checkUser",{
-            username:req.body.username,
-            password:req.body.password
+        const user = await axios.post("http://localhost:8080/login/checkUser", {
+            username: req.body.username,
+            password: req.body.password
         });
         res.send(user.data);
     } catch {
@@ -140,7 +140,7 @@ router.post('/login', async (req, res) => {
 
 
 //Upload image
-app.post('/admin/upload', function(req, res) {
+app.post('/admin/upload', function (req, res) {
     console.log(req.files.picture)
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
@@ -150,13 +150,33 @@ app.post('/admin/upload', function(req, res) {
     let sampleFile = req.files.picture;
 
     // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv(`../../Frontend/ecommerce-frontend/src/assets/img/${sampleFile.name}`, function(err) {
+    sampleFile.mv(`../../Frontend/ecommerce-frontend/src/assets/img/${sampleFile.name}`, function (err) {
         if (err)
             return res.status(500).send(err);
 
         res.send(sampleFile.name);
     });
 });
+
+router.post('/admin/saveProduct', async (req, res) => {
+
+    console.log(req.body)
+   try{
+       const product = await axios.post("http://localhost:8080/admin/saveProduct", {
+           code: req.body.code,
+           title: req.body.title,
+           text: req.body.text,
+           price: req.body.price,
+           amount: req.body.amount,
+           idCompany: req.body.idCompany
+
+       });
+
+       res.send("Product saved");
+   }catch  {
+       res.send("Axios error");
+   }
+})
 
 //endregion
 module.exports = router;
