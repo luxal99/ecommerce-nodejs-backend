@@ -121,6 +121,19 @@ router.get('/registration/getUserType', async (req, res) => {
     } catch {
 
     }
+});
+
+router.post('/login', async (req, res) => {
+    console.log(req.body)
+    try {
+        const user = await axios.post("http://localhost:8080/login/checkUser",{
+            username:req.body.username,
+            password:req.body.password
+        });
+        res.send(user.data);
+    } catch {
+        res.send("Axios error");
+    }
 })
 
 //endregion
