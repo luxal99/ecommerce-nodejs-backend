@@ -69,12 +69,30 @@ router.delete('/deleteOrder/:id_order', async (req, res) => {
 //region -- Java Serivice --
 
 router.post('/registration/client', async (req, res) => {
-    
+    console.log(req.body)
     try {
-        const user = await axios.post("http://localhost:8080/registration/saveUser", {
+        const user = await axios.post("http://localhost:8080/registration/user", {
             username: req.body.username,
             password: req.body.password,
             idClient: req.body.idClient,
+            idUserType: req.body.idUserType
+        });
+
+        res.send(user.data);
+
+    } catch {
+        res.send({message: "Axios error"})
+    }
+
+
+});
+
+router.post('/registration/company', async (req, res) => {
+    try {
+        const user = await axios.post("http://localhost:8080/registration/company", {
+            username: req.body.username,
+            password: req.body.password,
+            idCompany: req.body.idCompany,
             idUserType: req.body.idUserType
         });
 
