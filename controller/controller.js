@@ -5,11 +5,13 @@ const router = express.Router();
 const service = require('../service/app');
 const axios = require('axios');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({limit: '50mb', type: 'application/json'}));
 app.use(bodyParser.json());
 app.use(router);
 app.use(cors());
+app.use(fileUpload());
 
 router.get('/', (req, res) => {
     res.send('Node js');
@@ -134,7 +136,28 @@ router.post('/login', async (req, res) => {
     } catch {
         res.send("Axios error");
     }
-})
+});
+
+
+//Upload image
+app.post('/admin/upload', function(req, res) {
+    console.log(req.files.picture)
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let sampleFile = req.files.picture;
+
+    // Use the mv() method to place the file somewhere on your server
+    sampleFile.mv(`../../Frontend/ecommerce-frontend/src/assets/img/${sampleFile.name}`, function(err) {
+        if (err)
+            return res.status(500).send(err);
+
+        res.send(sampleFile.name);
+    });
+});
 
 //endregion
+module.exports = router;
 module.exports = app;
