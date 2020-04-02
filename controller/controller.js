@@ -68,6 +68,11 @@ router.delete('/deleteOrder/:id_order', async (req, res) => {
 
 //region -- Java Serivice --
 
+
+/**
+ * Servis koji Spring servisu prosledjuje
+ * objekat user sa frontenda
+ */
 router.post('/registration/client', async (req, res) => {
     console.log(req.body)
     try {
@@ -87,6 +92,10 @@ router.post('/registration/client', async (req, res) => {
 
 });
 
+/**
+ * Servis koji Spring servisu prosledjuje
+ * objekat user sa frontenda
+ */
 router.post('/registration/company', async (req, res) => {
     try {
         const user = await axios.post("http://localhost:8080/registration/company", {
