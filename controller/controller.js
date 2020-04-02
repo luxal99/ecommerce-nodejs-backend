@@ -12,7 +12,7 @@ app.use(router);
 app.use(cors());
 
 router.get('/', (req, res) => {
-    res.send('');
+    res.send('Node js');
 });
 
 
@@ -68,32 +68,17 @@ router.delete('/deleteOrder/:id_order', async (req, res) => {
 
 //region -- Java Serivice --
 
-router.post('/register/user', async (req, res) => {
-
+router.post('/registration/client', async (req, res) => {
+    
     try {
-
-        const userAddress = await axios.post("http://localhost:8080/registration/saveUserAddress", {
-            city: req.body[0].city,
-            address: req.body[0].address
+        const user = await axios.post("http://localhost:8080/registration/saveUser", {
+            username: req.body.username,
+            password: req.body.password,
+            idClient: req.body.idClient,
+            idUserType: req.body.idUserType
         });
 
-        const client = await axios.post('http://localhost:8080/registration/saveClient', {
-            name: req.body[1].name,
-            lastname: req.body[1].lastname,
-            telephone: req.body[1].telephone,
-            mail: req.body[1].mail,
-            idUserAddress: userAddress.data
-        });
-
-        const user = await axios.post('http://localhost:8080/registration/saveUser', {
-            username: req.body[2].username,
-            password: req.body[2].password,
-            idUserType: req.body[2].idUserType,
-            idClient: client.data
-
-        });
-
-        res.send({savedUser: user.data});
+        res.send(user.data);
 
     } catch {
         res.send({message: "Axios error"})
@@ -101,6 +86,15 @@ router.post('/register/user', async (req, res) => {
 
 
 });
+
+router.get('/registration/getUserType', async (req, res) => {
+    try {
+        const userType = await axios.get("http://localhost:8080/registration/getUserType");
+        res.json(userType.data)
+    } catch {
+
+    }
+})
 
 //endregion
 module.exports = app;
