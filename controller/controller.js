@@ -156,6 +156,16 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/admin/findCompany/:idCompany',async (req,res)=>{
+       try{
+           const company = await axios.get(`http://localhost:8080/login/findCompany/${req.params.idCompany}`);
+           res.json(company.data)
+       }catch  {
+           res.json("Can not find company")
+       }
+
+})
+
 //endregion
 
 
@@ -216,8 +226,19 @@ router.put("/admin/updateProduct", async (req, res) => {
     }
 })
 
+router.get('/admin/getProduct/:idCompany',async (req,res)=>{
+    console.log(req.params.idCompany);
+    try {
+        const productList = await axios.get(`http://localhost:8080/login/getProduct/${req.params.idCompany}`);
+        res.json(productList.data);
+    }catch  {
+        res.send("Axios error");
+    }
+});
+
 
 //endregion
+
 
 
 router.get("/getAllProducts", async (req, res) => {
