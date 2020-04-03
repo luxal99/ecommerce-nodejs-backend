@@ -66,15 +66,30 @@ router.delete('/deleteOrder/:id_order', async (req, res) => {
     }
 
 });
+
+//Upload image
+app.post('/admin/upload', function (req, res) {
+    console.log(req.files.image)
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let sampleFile = req.files.image;
+
+    // Use the mv() method to place the file somewhere on your server
+    sampleFile.mv(`../../Frontend/ecommerce-frontend/src/assets/img/${sampleFile.name}`, function (err) {
+        if (err)
+            return res.status(500).send(err);
+
+        res.send(sampleFile.name);
+    });
+});
 //endregion
 
 //region -- Java Serivice --
 
-
-/**
- * Servis koji Spring servisu prosledjuje
- * objekat user sa frontenda
- */
+//region -- Registration/Login --
 router.post('/registration/client', async (req, res) => {
     console.log(req.body)
     try {
@@ -125,8 +140,11 @@ router.get('/registration/getUserType', async (req, res) => {
     }
 });
 
+/**
+ * Servis koji Spring servisu prosledjuje
+ * objekat user sa frontenda
+ */
 router.post('/login', async (req, res) => {
-    console.log(req.body)
     try {
         const user = await axios.post("http://localhost:8080/login/checkUser", {
             username: req.body.username,
@@ -138,45 +156,79 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//endregion
 
-//Upload image
-app.post('/admin/upload', function (req, res) {
-    console.log(req.files.picture)
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
+
+//region -- Product/Admin --
+
+
+//Save product
+router.post('/admin/saveProduct', async (req, res) => {
+    try {
+        const product = await axios.post("http://localhost:8080/admin/saveProduct", {
+            code: req.body.code,
+            title: req.body.title,
+            text: req.body.text,
+            price: req.body.price,
+            amount: req.body.amount,
+            picture: req.body.picture,
+            idCompany: req.body.idCompany
+
+        });
+
+        res.send({data: product.data});
+    } catch {
+        res.send("Axios error");
     }
-
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.picture;
-
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv(`../../Frontend/ecommerce-frontend/src/assets/img/${sampleFile.name}`, function (err) {
-        if (err)
-            return res.status(500).send(err);
-
-        res.send(sampleFile.name);
-    });
 });
 
-router.post('/admin/saveProduct', async (req, res) => {
 
-   try{
-       const product = await axios.post("http://localhost:8080/admin/saveProduct", {
-           code: req.body.code,
-           title: req.body.title,
-           text: req.body.text,
-           price: req.body.price,
-           amount: req.body.amount,
-           picture:req.body.picture,
-           idCompany: req.body.idCompany
+router.delete("/admin/deleteProduct/:idProduct", async (req, res) => {
 
-       });
+    try {
+        const productForDelete = await axios.delete(`http://localhost:8080/admin/deleteProduct/${req.params.idProduct}`);
+        res.send(productForDelete.data);
 
-       res.send("Product saved");
-   }catch  {
-       res.send("Axios error");
-   }
+    } catch {
+        res.send("Axios error");
+    }
+});
+
+router.put("/admin/updateProduct", async (req, res) => {
+    console.log(req.body)
+    try {
+        const product = axios.put("http://localhost:8080/admin/updateProduct", {
+
+            idProduct: req.body.idProduct,
+            text: req.body.text,
+            title: req.body.title,
+            picture: req.body.picture,
+            code: req.body.code,
+            price:req.body.price,
+            amount:req.body.amount,
+            idCompany: req.body.idCompany
+        })
+
+        res.send({data:product.data})
+
+    } catch {
+
+    }
 })
+
+
+//endregion
+
+
+router.get("/getAllProducts", async (req, res) => {
+
+    try {
+        const productList = await axios.get("http://localhost:8080/client/getAllProducts");
+        res.send(productList.data)
+    } catch {
+        res.send("Axios error");
+    }
+});
 
 //endregion
 module.exports = router;
