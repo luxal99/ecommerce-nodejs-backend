@@ -160,7 +160,6 @@ app.post('/admin/upload', function (req, res) {
 
 router.post('/admin/saveProduct', async (req, res) => {
 
-    console.log(req.body)
    try{
        const product = await axios.post("http://localhost:8080/admin/saveProduct", {
            code: req.body.code,
@@ -168,6 +167,7 @@ router.post('/admin/saveProduct', async (req, res) => {
            text: req.body.text,
            price: req.body.price,
            amount: req.body.amount,
+           picture:req.body.picture,
            idCompany: req.body.idCompany
 
        });
