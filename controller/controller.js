@@ -90,6 +90,7 @@ app.post('/admin/upload', function (req, res) {
 
 //region -- Registration/Login --
 router.post('/registration/client', async (req, res) => {
+    console.log(req.body)
     try {
         const user = await axios.post("http://localhost:8080/registration/user", {
             username: req.body.username,
@@ -172,6 +173,7 @@ router.get('/admin/findCompany/:idCompany',async (req,res)=>{
 
 //Save product
 router.post('/admin/saveProduct', async (req, res) => {
+    console.log(req.body);
     try {
         const product = await axios.post("http://localhost:8080/admin/saveProduct", {
             code: req.body.code,
@@ -255,6 +257,16 @@ router.get("/getAllProducts", async (req, res) => {
         res.send("Axios error");
     }
 });
+
+router.get("/client/getClient/:idClient",async (req,res)=>{
+
+    try {
+        const client = await axios.get(`http://localhost:8080/login/findClient/${req.params.idClient}`);
+        res.send(client.data)
+    }catch  {
+        res.send("Axios error");
+    }
+})
 
 //endregion
 module.exports = router;
