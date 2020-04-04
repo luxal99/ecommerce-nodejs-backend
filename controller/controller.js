@@ -69,7 +69,6 @@ router.delete('/deleteOrder/:id_order', async (req, res) => {
 
 //Upload image
 app.post('/admin/upload', function (req, res) {
-    console.log(req.files.image)
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
@@ -91,7 +90,6 @@ app.post('/admin/upload', function (req, res) {
 
 //region -- Registration/Login --
 router.post('/registration/client', async (req, res) => {
-    console.log(req.body)
     try {
         const user = await axios.post("http://localhost:8080/registration/user", {
             username: req.body.username,
@@ -193,6 +191,10 @@ router.post('/admin/saveProduct', async (req, res) => {
 });
 
 
+/**
+ * Service for delete product
+ * @param idProduct
+ */
 router.delete("/admin/deleteProduct/:idProduct", async (req, res) => {
 
     try {
@@ -204,8 +206,8 @@ router.delete("/admin/deleteProduct/:idProduct", async (req, res) => {
     }
 });
 
+//Service for update product
 router.put("/admin/updateProduct", async (req, res) => {
-    console.log(req.body)
     try {
         const product = axios.put("http://localhost:8080/admin/updateProduct", {
 
@@ -226,8 +228,11 @@ router.put("/admin/updateProduct", async (req, res) => {
     }
 })
 
+/**
+ * Service for find all product for company
+ * @param idCompany
+ */
 router.get('/admin/getProduct/:idCompany',async (req,res)=>{
-    console.log(req.params.idCompany);
     try {
         const productList = await axios.get(`http://localhost:8080/login/getProduct/${req.params.idCompany}`);
         res.json(productList.data);
