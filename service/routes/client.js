@@ -38,11 +38,11 @@ router.post('/saveOrder', (req, res) => {
              const productList = req.body.productList;
 
              for (const productFromArr of productList) {
-                 console.log(productFromArr);
+                 console.log(productFromArr.orderAmount);
                  const product = new Product({
 
                      title: productFromArr.title,
-                     amount: productFromArr.amount,
+                     orderAmount: productFromArr.orderAmount,
                      code: productFromArr.code
                  });
 

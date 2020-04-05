@@ -11,7 +11,6 @@ const ProductSchema = mongoose.Schema({
     },
     amount: {
         type: Number,
-        required: true
     },
     orderAmount:{
         type:Number

@@ -39,6 +39,7 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
     try {
 
         class OrderModel{
+            _id;
             product = [];
             client;
             date;
@@ -48,19 +49,28 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
         const id = parseInt(req.params.idCompany);
         const allOrders = await Order.find();
         const orderArr=[];
-        for (const element of allOrders) {
-            var model = new OrderModel();
 
-            model.client = element.client;
-            model.total = element.total;
-            model.date = element.date;
-            for (const product of element.productList) {
-                if (product.idCompany.idCompany === id) {
-                    model.product.push(product);
-                }
-            }
-            orderArr.push(model)
-        }
+       var isIdMatching = false;
+
+
+        for (const element of allOrders) {
+
+               var model = new OrderModel();
+               model._id = element._id;
+               model.client = element.client;
+               model.total = element.total;
+               model.date = element.date;
+               for (const product of element.productList) {
+                   if (product.idCompany.idCompany === id) {
+                       isIdMatching = true;
+                       model.product.push(product);
+                       orderArr.push(model)
+                   }
+               }
+
+
+           }
+
 
         res.send(orderArr);
     } catch {
@@ -86,7 +96,7 @@ router.get("/getAnalytics" ,async (req,res)=>{
                     "__alias_0": "$title"
                 },
                 "__alias_1": {
-                    "$sum": "$amount"
+                    "$sum": "$orderAmount"
                 }
             }
         },
@@ -107,7 +117,7 @@ router.get("/getAnalytics" ,async (req,res)=>{
         {
             "$limit": 5000
         }
-    ]   );
+    ]);
 
     res.send(product)
 })
