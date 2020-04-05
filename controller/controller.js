@@ -25,10 +25,11 @@ router.get('/', (req, res) => {
     zatim se preko biblioteke @axios poziva servis za
     upis u bazu koji prirada mikroservisu.
  */
-router.post('/saveOrder', async (req, res) => {
-
+router.post('/client/saveOrder', async (req, res) => {
+    console.log(req.body);
     try {
         await axios.post('http://localhost:8000/client/saveOrder', {
+            client: req.body.client,
             date: Date.now(),
             total: req.body.total,
             productList: req.body.productList
@@ -46,6 +47,15 @@ router.post('/saveOrder', async (req, res) => {
 router.get('/getOrders', async (req, res) => {
     try {
         const orders = await axios.get("http://localhost:8000/admin/getOrders");
+        res.json(orders.data)
+    } catch {
+        res.send({message: "Axios error"});
+    }
+});
+
+router.get('/getOrdersById/:idCompany', async (req, res) => {
+    try {
+        const orders = await axios.get(`http://localhost:8000/admin/getOrdersById/${req.params.idCompany}`);
         res.json(orders.data)
     } catch {
         res.send({message: "Axios error"});
@@ -155,13 +165,13 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/admin/findCompany/:idCompany',async (req,res)=>{
-       try{
-           const company = await axios.get(`http://localhost:8080/login/findCompany/${req.params.idCompany}`);
-           res.json(company.data)
-       }catch  {
-           res.json("Can not find company")
-       }
+router.get('/admin/findCompany/:idCompany', async (req, res) => {
+    try {
+        const company = await axios.get(`http://localhost:8080/login/findCompany/${req.params.idCompany}`);
+        res.json(company.data)
+    } catch {
+        res.json("Can not find company")
+    }
 
 })
 
@@ -218,12 +228,12 @@ router.put("/admin/updateProduct", async (req, res) => {
             title: req.body.title,
             picture: req.body.picture,
             code: req.body.code,
-            price:req.body.price,
-            amount:req.body.amount,
+            price: req.body.price,
+            amount: req.body.amount,
             idCompany: req.body.idCompany
         })
 
-        res.send({data:product.data})
+        res.send({data: product.data})
 
     } catch {
 
@@ -234,18 +244,26 @@ router.put("/admin/updateProduct", async (req, res) => {
  * Service for find all product for company
  * @param idCompany
  */
-router.get('/admin/getProduct/:idCompany',async (req,res)=>{
+router.get('/admin/getProduct/:idCompany', async (req, res) => {
     try {
         const productList = await axios.get(`http://localhost:8080/login/getProduct/${req.params.idCompany}`);
         res.json(productList.data);
-    }catch  {
+    } catch {
         res.send("Axios error");
     }
 });
 
+router.get('/admin/getAnalytics',async (req,res)=>{
+    try{
+        const analyticsData = await axios.get("http://localhost:8000/admin/getAnalytics");
+        res.send(analyticsData.data);
+    }catch  {
+        res.send("Axios error");
+    }
+})
+
 
 //endregion
-
 
 
 router.get("/getAllProducts", async (req, res) => {
@@ -258,12 +276,12 @@ router.get("/getAllProducts", async (req, res) => {
     }
 });
 
-router.get("/client/getClient/:idClient",async (req,res)=>{
+router.get("/client/getClient/:idClient", async (req, res) => {
 
     try {
         const client = await axios.get(`http://localhost:8080/login/findClient/${req.params.idClient}`);
         res.send(client.data)
-    }catch  {
+    } catch {
         res.send("Axios error");
     }
 })

@@ -27,27 +27,29 @@ app.use(function (req, res, next) {
 router.post('/saveOrder', (req, res) => {
     try {
         const order = new Order({
+            client:req.body.client,
             date: req.body.date,
             total: req.body.total,
             productList: req.body.productList
+
         });
 
         order.save().then(() => {
-            const productList = req.body.productList;
+             const productList = req.body.productList;
 
-            for (const productFromArr of productList) {
-                console.log(productFromArr);
-                const product = new Product({
+             for (const productFromArr of productList) {
+                 console.log(productFromArr);
+                 const product = new Product({
 
-                    title: productFromArr.title,
-                    amount: productFromArr.amount,
-                    code: productFromArr.code
-                });
+                     title: productFromArr.title,
+                     amount: productFromArr.amount,
+                     code: productFromArr.code
+                 });
 
-                product.save().then(() => {
+                 product.save().then(() => {
 
-                })
-            }
+                 })
+             }
         });
 
 

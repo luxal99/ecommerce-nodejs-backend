@@ -7,8 +7,9 @@ const cors = require('cors');
 const router = express.Router();
 const fileUpload = require('express-fileupload');
 const Order = require('../model/Order');
+const Product = require('../model/Product')
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(router);
@@ -25,25 +26,91 @@ app.use(function (req, res, next) {
 });
 
 
-router.get('/getOrders',async (req,res)=>{
-    try{
+router.get('/getOrders', async (req, res) => {
+    try {
         const orders = await Order.find();
         res.json(orders);
-    }catch  {
-        res.json({message:"Database error"});
+    } catch {
+        res.json({message: "Database error"});
     }
 });
 
-router.delete('/deleteOrder/:id_order',async (req,res)=>{
-    try{
+router.get('/getOrdersById/:idCompany', async (req, res) => {
+    try {
+
+        class OrderModel{
+            product = [];
+            client;
+            date;
+            total;
+        }
+
+        const id = parseInt(req.params.idCompany);
+        const allOrders = await Order.find();
+        const orderArr=[];
+        for (const element of allOrders) {
+            var model = new OrderModel();
+
+            model.client = element.client;
+            model.total = element.total;
+            model.date = element.date;
+            for (const product of element.productList) {
+                if (product.idCompany.idCompany === id) {
+                    model.product.push(product);
+                }
+            }
+            orderArr.push(model)
+        }
+
+        res.send(orderArr);
+    } catch {
+        res.send("Error")
+    }
+})
+
+router.delete('/deleteOrder/:id_order', async (req, res) => {
+    try {
         console.log(req.params.id_order);
-        const removedOrder = await Order.deleteOne({_id:req.params.id_order});
+        const removedOrder = await Order.deleteOne({_id: req.params.id_order});
         res.send(200);
-    }catch  {
-        res.send({message:"Database error"})
+    } catch {
+        res.send({message: "Database error"})
     }
 });
 
+router.get("/getAnalytics" ,async (req,res)=>{
+    const product = await Product.aggregate([
+        {
+            "$group": {
+                "_id": {
+                    "__alias_0": "$title"
+                },
+                "__alias_1": {
+                    "$sum": "$amount"
+                }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "__alias_0": "$_id.__alias_0",
+                "__alias_1": 1
+            }
+        },
+        {
+            "$project": {
+                "x": "$__alias_0",
+                "y": "$__alias_1",
+                "_id": 0
+            }
+        },
+        {
+            "$limit": 5000
+        }
+    ]   );
+
+    res.send(product)
+})
 
 
 module.exports = router;
