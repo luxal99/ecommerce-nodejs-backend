@@ -69,7 +69,7 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
                for (const product of element.productList) {
                    if (product.idCompany.idCompany === id) {
                        isIdMatching = true;
-                       model.price+=product.price;
+                       model.price+=(product.price)*(product.orderAmount);
                        console.log(model.price)
                        model.product.push(product);
                        orderArr.push(model)
