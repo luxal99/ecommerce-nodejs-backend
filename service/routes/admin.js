@@ -40,10 +40,16 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
 
         class OrderModel{
             _id;
-            product = [];
+            product;
             client;
+            price;
             date;
             total;
+
+            constructor() {
+                this.price = 0;
+                this.product = [];
+            }
         }
 
         const id = parseInt(req.params.idCompany);
@@ -63,6 +69,8 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
                for (const product of element.productList) {
                    if (product.idCompany.idCompany === id) {
                        isIdMatching = true;
+                       model.price+=product.price;
+                       console.log(model.price)
                        model.product.push(product);
                        orderArr.push(model)
                    }
