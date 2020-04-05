@@ -26,8 +26,22 @@ router.get('/', (req, res) => {
     upis u bazu koji prirada mikroservisu.
  */
 router.post('/client/saveOrder', async (req, res) => {
-    console.log(req.body);
+
     try {
+        for (const product of req.body.productList){
+            var amount = product.amount - product.orderAmount;
+            await axios.put("http://localhost:8080/admin/updateProduct",{
+                idProduct: product.idProduct,
+                text: product.text,
+                title: product.title,
+                picture: product.picture,
+                code: product.code,
+                price: product.price,
+                amount: amount,
+                idCompany: product.idCompany
+            })
+        }
+
         await axios.post('http://localhost:8000/client/saveOrder', {
             client: req.body.client,
             date: Date.now(),
