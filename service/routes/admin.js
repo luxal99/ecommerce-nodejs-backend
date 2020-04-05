@@ -71,8 +71,8 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
 
            }
 
-
-        res.send(orderArr);
+        const unique = [...new Map(orderArr.map(item => [item._id, item])).values()];
+        res.send(unique);
     } catch {
         res.send("Error")
     }
