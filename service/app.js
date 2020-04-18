@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
-const bodyparser = require('body-parser');
 const mongodb = require('../config/database');
 const clientRoute = require('./routes/client');
+const adminRoute = require('./routes/admin');
+
 app.use('/client',clientRoute);
-app.use(bodyparser.json());
+app.use('/admin',adminRoute);
 app.listen(process.env.MICRO_SERVICE_PORT,()=>{
-    console.log("Micro runned");
+    console.log("Microservice runned");
 });
 
 module.exports = app;

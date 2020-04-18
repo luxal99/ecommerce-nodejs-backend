@@ -1,15 +1,18 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-const bodyparser = require('body-parser');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const router = express.Router();
 const Order = require('../model/Order');
-
+const Product = require('../model/Product');
 app.use(express.static(__dirname + '/static', {dotfiles: 'allow'}));
-app.use(bodyparser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(cors());
+app.use(router);
 
-require('dotenv').config();
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
@@ -19,22 +22,43 @@ app.use(function (req, res, next) {
     next();
 });
 
-router.post('/saveOrder',(req,res)=>{
-    const order = new Order({
-        date:Date.now(),
-        total:400,
-        productList: [
-            {title:'Smoki',amount:200},
-            {title:'Smoki',amount:200}
-        ]
-    })
 
-    order.save().then(data=>{
-        res.json(order)
-    }).catch(err=>{
-        res.send(err);
-    })
-})
+// Funkija za upis porudzbine u bazu
+router.post('/saveOrder', (req, res) => {
+    try {
+        const order = new Order({
+            client:req.body.client,
+            date: req.body.date,
+            total: req.body.total,
+            productList: req.body.productList
+
+        });
+
+        order.save().then(() => {
+             const productList = req.body.productList;
+
+             for (const productFromArr of productList) {
+                 const product = new Product({
+
+                     title: productFromArr.title,
+                     orderAmount: productFromArr.orderAmount,
+                     code: productFromArr.code
+                 });
+
+                 product.save().then(() => {
+
+                 })
+             }
+        });
+
+
+        res.json({message: "Saved"});
+    } catch {
+        res.json({message: "Database error"})
+    }
+
+});
 
 
 module.exports = router;
+module.exports = app;
