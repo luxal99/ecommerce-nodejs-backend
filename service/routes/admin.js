@@ -7,7 +7,7 @@ const cors = require('cors');
 const router = express.Router();
 const fileUpload = require('express-fileupload');
 const Order = require('../model/Order');
-const Product = require('../model/Product')
+const Product = require('../model/Product');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -70,7 +70,6 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
                    if (product.idCompany.idCompany === id) {
                        isIdMatching = true;
                        model.price+=(product.price)*(product.orderAmount);
-                       console.log(model.price)
                        model.product.push(product);
                        orderArr.push(model)
                    }
@@ -88,7 +87,6 @@ router.get('/getOrdersById/:idCompany', async (req, res) => {
 
 router.delete('/deleteOrder/:id_order', async (req, res) => {
     try {
-        console.log(req.params.id_order);
         const removedOrder = await Order.deleteOne({_id: req.params.id_order});
         res.send(200);
     } catch {
